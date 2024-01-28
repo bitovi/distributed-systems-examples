@@ -17,3 +17,22 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
+  localstack:
+    container_name: distributed_systems_example-localstack
+    build:
+      context: .
+      dockerfile: Dockerfile.localstack
+    ports:
+      - 4566:4566
+    environment:
+      SERVICES: sqs,sns,iam,s3,lambda
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: accesskeyid
+      AWS_SECRET_ACCESS_KEY: accesskey
+      DOCKER_HOST: unix:///var/run/docker.sock
+      LAMBDA_EXECUTOR: local
+#      DATA_DIR: /tmp/localstack/data
+    volumes:
+#      - /tmp/localstack:/tmp/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./create-aws-resources.sh:/etc/localstack/init/ready.d/create-aws-resources.sh
