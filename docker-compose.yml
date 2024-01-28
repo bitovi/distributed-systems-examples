@@ -1,0 +1,19 @@
+
+services:
+  microservice:
+    container_name: distributed_systems_example-microservice
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432
+  db: 
+    container_name: distributed_systems_example-db
+    image: postgres:16-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
