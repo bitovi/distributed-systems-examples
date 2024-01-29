@@ -1,3 +1,3 @@
 exports.handler = async function(event, context) {
-  return "timeout"
+  console.log('received order timeout')
 }

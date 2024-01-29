@@ -1,3 +1,3 @@
 exports.handler = async function(event, context) {
-  return "timeout poller"
+  console.log('timeout poller running')
 }

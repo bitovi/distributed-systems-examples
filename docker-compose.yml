@@ -1,5 +1,12 @@
 
 services:
+  transmission-endpoint:
+    container_name: distributed_systems_example-transmission-endpoint
+    build:
+      context: .
+      dockerfile: Dockerfile.transmissionEndpoint
+    ports:
+      - 3001:3000
   microservice:
     container_name: distributed_systems_example-microservice
     build:
@@ -25,7 +32,7 @@ services:
     ports:
       - 4566:4566
     environment:
-      SERVICES: sqs,sns,iam,s3,lambda
+      SERVICES: sqs,sns,iam,s3,lambda,events
       AWS_DEFAULT_REGION: us-east-1
       AWS_ACCESS_KEY_ID: accesskeyid
       AWS_SECRET_ACCESS_KEY: accesskey
