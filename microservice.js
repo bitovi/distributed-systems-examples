@@ -8,12 +8,12 @@ const PORT = process.env.PORT || 3000
 const fastify = Fastify({
   logger: true
 })
-// Replace these with your actual database connection details
+
 fastify.register(fastifyPostgres, {
   connectionString: process.env.DATABASE_URL
 })
 
-const snsClient = new SNSClient({ endpoint: "http://localstack:4566", tls: false })
+const snsClient = new SNSClient({ endpoint: process.env.LOCALSTACK_URL, tls: false })
 
 fastify.post('/order', {
   schema: orderSchema,
