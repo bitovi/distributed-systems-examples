@@ -13,7 +13,7 @@ fastify.register(fastifyPostgres, {
   connectionString: process.env.DATABASE_URL
 })
 
-const snsClient = new SNSClient({ endpoint: process.env.LOCALSTACK_URL, tls: false })
+const snsClient = new SNSClient({ endpoint: process.env.AWS_URL, tls: false })
 
 fastify.post('/order', {
   schema: orderSchema,
