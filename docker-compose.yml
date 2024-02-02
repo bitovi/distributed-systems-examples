@@ -20,6 +20,7 @@ services:
       AWS_REGION: us-east-1
       AWS_ACCESS_KEY_ID: accesskeyid
       AWS_SECRET_ACCESS_KEY: accesskey
+      ORDER_TRANSMISSION_TOPIC: arn:aws:sns:us-east-1:000000000000:orderTransmission
   db: 
     container_name: distributed_systems_example-db
     image: postgres:16-alpine

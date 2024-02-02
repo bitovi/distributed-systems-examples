@@ -60,7 +60,7 @@ async function publishTransmission({ order }) {
     Message: JSON.stringify({
       order
     }),
-    TopicArn: 'arn:aws:sns:us-east-1:000000000000:orderTransmission',
+    TopicArn: process.env.ORDER_TRANSMISSION_TOPIC,
   }
 
   try {
