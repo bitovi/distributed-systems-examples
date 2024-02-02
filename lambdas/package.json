@@ -1,6 +1,7 @@
 {
   "name": "lambdas",
   "dependencies": {
+    "@aws-sdk/client-sqs": "^3.504.0",
     "node-fetch": "^3.3.2"
   }
 }
