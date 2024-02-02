@@ -9,7 +9,7 @@ RUN apt-get update
 RUN apt-get install zip
 
 RUN cd lambdas \
-  # && npm install \
+  && npm install \
   && zip -r lambdas.zip .
 
 FROM localstack/localstack

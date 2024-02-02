@@ -16,14 +16,21 @@ services:
       - 3000:3000
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432
+      LOCALSTACK_URL: http://localstack:4566
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: accesskeyid
+      AWS_SECRET_ACCESS_KEY: accesskey
   db: 
     container_name: distributed_systems_example-db
     image: postgres:16-alpine
     ports:
-      - 5432:5432
+      - 5435:5432
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d/
   localstack:
     container_name: distributed_systems_example-localstack
     build:
@@ -37,9 +44,11 @@ services:
       AWS_ACCESS_KEY_ID: accesskeyid
       AWS_SECRET_ACCESS_KEY: accesskey
       DOCKER_HOST: unix:///var/run/docker.sock
-      LAMBDA_EXECUTOR: local
+      LAMBDA_KEEPALIVE_MS: 5000
 #      DATA_DIR: /tmp/localstack/data
     volumes:
 #      - /tmp/localstack:/tmp/localstack
       - /var/run/docker.sock:/var/run/docker.sock
       - ./create-aws-resources.sh:/etc/localstack/init/ready.d/create-aws-resources.sh
+volumes:
+  postgres_data:

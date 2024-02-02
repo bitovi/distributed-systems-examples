@@ -5,6 +5,9 @@
     "url": "git+https://github.com/bitovi/distributed-systems-examples.git"
   },
   "dependencies": {
-    "fastify": "^4.25.2"
+    "@aws-sdk/client-sns": "^3.504.0",
+    "@fastify/postgres": "^5.2.2",
+    "fastify": "^4.25.2",
+    "pg": "^8.11.3"
   }
 }
