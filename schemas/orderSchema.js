@@ -18,9 +18,9 @@ const orderSchema = {
         minItems: 1,
         items: {
           type: 'object',
-          required: ['product_code', 'quantity', 'total'],
+          required: ['productCode', 'quantity', 'total'],
           properties: {
-            product_code: { type: 'string' },
+            productCode: { type: 'string' },
             quantity: { type: 'number' },
             total: { type: 'number' }
           }
