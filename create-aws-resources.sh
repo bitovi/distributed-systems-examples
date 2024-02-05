@@ -24,7 +24,7 @@ EOF
 echo "Create admin iam role"
 aws \
   iam create-role \
-  --endpoint-url http://localhost:4566
+  --endpoint-url http://localhost:4566 \
   --region us-east-1 \
   --role-name admin-role \
   --path / \
