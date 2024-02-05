@@ -74,6 +74,14 @@ aws \
   --timeout 60 \
   --memory-size 128
 
+echo "Map Order Transmission Lambda to Order Transmission Queue"
+aws \
+  lambda create-event-source-mapping \
+  --endpoint-url http://localhost:4566 \
+  --function-name orderTransmission \
+  --batch-size 1 \
+  --event-source-arn "arn:aws:sqs:us-east-1:000000000000:orderTransmission"
+
 echo "Create Order Timeout SNS Topic"
 aws \
   sns create-topic \
@@ -107,6 +115,14 @@ aws \
   --environment Variables="{API_URL=$API_URL}" \
   --timeout 60 \
   --memory-size 128
+
+echo "Map Order Timeout Lambda to Order Timeout Queue"
+aws \
+  lambda create-event-source-mapping \
+  --endpoint-url http://localhost:4566 \
+  --function-name orderTimeout \
+  --batch-size 1 \
+  --event-source-arn "arn:aws:sqs:us-east-1:000000000000:orderTimeout"
 
 echo "Create Order Timeout Poller Lambda"
 aws \
@@ -145,19 +161,3 @@ aws \
   --endpoint-url http://localhost:4566 \
   --rule OrderTimeoutPollerRule \
   --targets "Id"="1","Arn"="arn:aws:lambda:us-east-1:000000000000:function:orderTimeoutPoller"
-
-echo "Map Order Timeout Lambda to Order Timeout Queue"
-aws \
-  lambda create-event-source-mapping \
-  --endpoint-url http://localhost:4566 \
-  --function-name orderTimeout \
-  --batch-size 1 \
-  --event-source-arn "arn:aws:sqs:us-east-1:000000000000:orderTimeout"
-
-echo "Map Order Transmission Lambda to Order Transmission Queue"
-aws \
-  lambda create-event-source-mapping \
-  --endpoint-url http://localhost:4566 \
-  --function-name orderTransmission \
-  --batch-size 1 \
-  --event-source-arn "arn:aws:sqs:us-east-1:000000000000:orderTransmission"

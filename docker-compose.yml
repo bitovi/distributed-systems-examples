@@ -61,6 +61,3 @@ services:
       - ./create-aws-resources.sh:/etc/localstack/init/ready.d/create-aws-resources.sh
 volumes:
   postgres_data:
-networks:
-  distributed_systems_network:
-    name: distributed_systems_network
