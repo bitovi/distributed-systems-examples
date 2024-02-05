@@ -1,7 +1,7 @@
 const Fastify = require('fastify')
 const fastifyPostgres = require('@fastify/postgres')
 const { SNSClient, PublishCommand } = require("@aws-sdk/client-sns")
-const { orderSchema } = require('./schemas/orderSchema')
+const { orderSchema, orderPatchSchema } = require('./schemas/orderSchema')
 
 const PORT = process.env.PORT || 3000
 
@@ -35,6 +35,23 @@ fastify.post('/order', {
   }
 })
 
+fastify.patch('/order', {
+  schema: orderPatchSchema,
+  handler: async function (request, reply) {
+    const { orderId, status } = request.body
+
+    try {
+      // Update Order
+      const order = await updateOrder({ orderId, status })
+
+      reply.send({ message: 'Order Updated', order_id: order.order_id })
+    } catch (err) {
+      request.log.error(err)
+      reply.status(500).send('Unable to update order')
+    }
+  }
+})
+
 fastify.listen({ host: '0.0.0.0', port: PORT }, function (err, address) {
   if (err) {
     fastify.log.error(err)
@@ -53,6 +70,23 @@ async function saveOrder({ customer, products, total }) {
   const { rows } = await fastify.pg.query(query, values)
 
   return rows[0]
+}
+
+async function updateOrder({ orderId, status }) {
+  const query = `
+    UPDATE orders SET status = $1
+    where order_id = $2
+    RETURNING *
+  `
+  const values = [status, orderId]
+
+  const result = await fastify.pg.query(query, values)
+
+  if (result.rowCount === 0) {
+    throw new Error('order not found')
+  }
+
+  return result.rows[0]
 }
 
 async function publishTransmission({ order }) {

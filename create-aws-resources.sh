@@ -1,5 +1,13 @@
 #!/bin/bash
 
+API_URL=${API_URL}
+AWS_URL=${AWS_URL}
+ORDER_TIMEOUT_TOPIC=${ORDER_TIMEOUT_TOPIC}
+POSTGRES_HOST=${POSTGRES_HOST}
+POSTGRES_USER=${POSTGRES_USER}
+POSTGRES_PASS=${POSTGRES_PASS}
+POSTGRES_PORT=${POSTGRES_PORT}
+
 cat <<EOF > admin-policy.json
 {
   "Version": "2012-10-17",
@@ -62,6 +70,7 @@ aws \
   --handler transmission.handler \
   --runtime nodejs20.x \
   --description "Order Transmission Lambda Function" \
+  --environment Variables="{API_URL=$API_URL}" \
   --timeout 60 \
   --memory-size 128
 
@@ -103,6 +112,7 @@ aws \
   --handler timeout.handler \
   --runtime nodejs20.x \
   --description "Order Timeout Lambda Function" \
+  --environment Variables="{API_URL=$API_URL}" \
   --timeout 60 \
   --memory-size 128
 
@@ -124,6 +134,7 @@ aws \
   --handler timeoutPoller.handler \
   --runtime nodejs20.x \
   --description "Order Timeout Poller Lambda Function" \
+  --environment Variables="{AWS_URL=$AWS_URL,ORDER_TIMEOUT_TOPIC=$ORDER_TIMEOUT_TOPIC,POSTGRES_PORT=$POSTGRES_PORT,POSTGRES_HOST=$POSTGRES_HOST,POSTGRES_USER=$POSTGRES_USER,POSTGRES_PASS=$POSTGRES_PASS}" \
   --timeout 60 \
   --memory-size 128
 
