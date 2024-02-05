@@ -42,10 +42,18 @@ services:
     environment:
       SERVICES: sqs,sns,iam,s3,lambda,events
       AWS_DEFAULT_REGION: us-east-1
+      AWS_URL: http://localstack:4566
+      API_URL: http://microservice:3000
       AWS_ACCESS_KEY_ID: accesskeyid
       AWS_SECRET_ACCESS_KEY: accesskey
       DOCKER_HOST: unix:///var/run/docker.sock
-      LAMBDA_KEEPALIVE_MS: 5000
+      LAMBDA_KEEPALIVE_MS: 60000
+      POSTGRES_HOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASS: postgres
+      POSTGRES_PORT: 5432
+      ORDER_TIMEOUT_TOPIC: arn:aws:sns:us-east-1:000000000000:orderTimeout
+      # DEBUG: 1
 #      DATA_DIR: /tmp/localstack/data
     volumes:
 #      - /tmp/localstack:/tmp/localstack
@@ -53,3 +61,6 @@ services:
       - ./create-aws-resources.sh:/etc/localstack/init/ready.d/create-aws-resources.sh
 volumes:
   postgres_data:
+networks:
+  distributed_systems_network:
+    name: distributed_systems_network

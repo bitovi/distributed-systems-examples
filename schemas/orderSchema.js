@@ -28,6 +28,17 @@ const orderSchema = {
       }
     }
   }
-};
+}
 
-module.exports = { orderSchema };
+const orderPatchSchema = {
+  body: {
+    type: 'object',
+    required: ['orderId', 'status'],
+    properties: {
+      orderId: { type: 'string' },
+      status: { type: 'string' },
+    }
+  }
+}
+
+module.exports = { orderSchema, orderPatchSchema }
