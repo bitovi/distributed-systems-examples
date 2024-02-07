@@ -1,0 +1,22 @@
+
+services:
+  transmission-endpoint:
+    container_name: distributed_systems_example-transmission-endpoint
+    build:
+      context: .
+      dockerfile: Dockerfile.transmissionEndpoint
+    ports:
+      - 3001:3000
+  db: 
+    container_name: distributed_systems_example-db
+    image: postgres:16-alpine
+    ports:
+      - 5435:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d/
+volumes:
+  postgres_data:
