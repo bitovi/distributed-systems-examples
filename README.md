@@ -2,13 +2,21 @@
 
 ## Run Temporal
 
-1. [Install Temporal CLI](https://docs.temporal.io/cli#install)
-2. `temporal server start-dev`
+- [Install Temporal CLI](https://docs.temporal.io/cli#install)
+- `temporal server start-dev --namespace distributed-systems-examples`
 
 ## Run postgres and the mock transmission endpoint
 
-1. `./start.sh`
+- `./start.sh`
 
-## Run the Temporal Worker
+## Run the API Server
 
-`go run server/main.go`
+- `go run server/main.go`
+
+## Run the Worker
+
+- `go run worker/main.go`
+
+## View Workflow History
+
+- visit [http://localhost:8233/namespaces/distributed-systems-examples/workflows](http://localhost:8233/namespaces/distributed-systems-examples/workflows)
