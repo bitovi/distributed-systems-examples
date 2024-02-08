@@ -1,13 +1,13 @@
 package activities
 
 import (
-	"os"
 	"bitovi/distributed-systems-examples/schemas"
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 
 	"go.temporal.io/sdk/activity"
 )
