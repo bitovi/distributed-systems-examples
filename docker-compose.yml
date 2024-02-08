@@ -9,8 +9,11 @@ services:
         curl -sSf https://temporal.download/cli.sh | sh && \
         PATH="\$PATH:/root/.temporalio/bin" >> ~/.bashrc && \
         source ~/.bashrc && \
-        temporal server start-dev
+        temporal server start-dev --ip 0.0.0.0
       '
+    ports:
+      - 7233:7233
+      - 8233:8233
   transmission-endpoint:
     container_name: distributed_systems_example-transmission-endpoint
     build:
@@ -34,10 +37,22 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.worker
+    depends_on:
+      - temporal-dev-server
+    restart: always
+    environment:
+      TEMPORAL_HOST_PORT: temporal-dev-server:7233
   server:
     container_name: distributed_systems_example-server
     build:
       context: .
       dockerfile: Dockerfile.server
+    depends_on:
+      - temporal-dev-server
+    restart: always
+    environment:
+      TEMPORAL_HOST_PORT: temporal-dev-server:7233
+    ports:
+      - 3000:3000
 volumes:
   postgres_data:

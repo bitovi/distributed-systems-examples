@@ -24,9 +24,9 @@ func loadEnv() {
 }
 
 func main() {
-	temporalClient, err := client.NewLazyClient(client.Options{
+	temporalClient, err := client.Dial(client.Options{
+		HostPort:  os.Getenv("TEMPORAL_HOST_PORT"),
 		Namespace: app.Namespace,
-		HostPort:  client.DefaultHostPort,
 	})
 	if err != nil {
 		log.Fatalln("Unable to start Temporal client, is the server running? ", zap.Error(err))

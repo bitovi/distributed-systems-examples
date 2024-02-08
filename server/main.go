@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/google/uuid"
 	"go.temporal.io/sdk/client"
@@ -21,7 +22,7 @@ func main() {
 	var err error
 	// The client is a heavyweight object that should be created once per process.
 	workflowClient, err = client.Dial(client.Options{
-		HostPort:  client.DefaultHostPort,
+		HostPort:  os.Getenv("TEMPORAL_HOST_PORT"),
 		Namespace: app.Namespace,
 	})
 	if err != nil {
