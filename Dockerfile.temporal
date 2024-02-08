@@ -1,0 +1,17 @@
+# Use Debian Buster as the base image
+FROM debian:buster
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y curl
+
+# Install Temporal CLI
+RUN curl -sSf https://temporal.download/cli.sh | sh
+
+# Add Temporal CLI to PATH
+ENV PATH="/root/.temporalio/bin:${PATH}"
+
+# Expose Temporal frontend service port and default Web UI port
+EXPOSE 7233 8233
+
+# Start Temporal server when container starts
+CMD ["temporal", "server", "start-dev"]
