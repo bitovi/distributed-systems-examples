@@ -42,6 +42,7 @@ services:
     restart: always
     environment:
       TEMPORAL_HOST_PORT: temporal-dev-server:7233
+      TRANSMIT_URL: http://transmission-endpoint:3000
   server:
     container_name: distributed_systems_example-server
     build:

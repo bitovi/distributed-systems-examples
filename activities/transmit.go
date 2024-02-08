@@ -1,6 +1,7 @@
 package activities
 
 import (
+	"os"
 	"bitovi/distributed-systems-examples/schemas"
 	"bytes"
 	"context"
@@ -24,7 +25,7 @@ func (cgf TransmitConfig) TransmitOrderActivity(ctx context.Context, i schemas.W
 		return err
 	}
 
-	url := "http://transmission-endpoint:3000"
+	url := os.Getenv("TRANSMIT_URL")
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		activity.GetLogger(ctx).Error("Error creating request", "Error", err)
