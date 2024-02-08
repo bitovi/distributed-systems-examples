@@ -1,21 +1,56 @@
 # Distributed Systems Examples
 
-## Run Temporal
-
-- [Install Temporal CLI](https://docs.temporal.io/cli#install)
-- `temporal server start-dev --namespace distributed-systems-examples`
-
-## Run postgres and the mock transmission endpoint
+## Run the Demo
 
 - `./start.sh`
 
-## Run the API Server
+## Test Scenarios
 
-- `go run server/main.go`
+### Success
 
-## Run the Worker
+- ./start.sh
+- Submit an Order
 
-- `go run worker/main.go`
+```bash
+curl --request POST \
+  --url http://localhost:3000/order \
+  --data '{
+  "customer": {
+    "firstName": "Matt",
+    "lastName": "Chaffe",
+    "city": "UK"
+  },
+  "products": [{
+    "productCode": 1,
+    "quantity": 1,
+    "total": 100
+  }],
+  "total": 100
+}'
+```
+
+### Failure
+
+- Test a failure case `docker-compose stop transmission-endpoint`
+- Submit the order
+
+```bash
+curl --request POST \
+  --url http://localhost:3000/order \
+  --data '{
+  "customer": {
+    "firstName": "Matt",
+    "lastName": "Chaffe",
+    "city": "UK"
+  },
+  "products": [{
+    "productCode": 1,
+    "quantity": 1,
+    "total": 100
+  }],
+  "total": 100
+}'
+```
 
 ## View Workflow History
 

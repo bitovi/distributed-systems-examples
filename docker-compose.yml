@@ -1,5 +1,16 @@
 
 services:
+  temporal-dev-server:
+    image: debian:buster
+    command: >
+      bash -c '\
+        apt update && \
+        apt install -y curl && \
+        curl -sSf https://temporal.download/cli.sh | sh && \
+        PATH="\$PATH:/root/.temporalio/bin" >> ~/.bashrc && \
+        source ~/.bashrc && \
+        temporal server start-dev
+      '
   transmission-endpoint:
     container_name: distributed_systems_example-transmission-endpoint
     build:
@@ -18,5 +29,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./initdb:/docker-entrypoint-initdb.d/
+  worker:
+    container_name: distributed_systems_example-worker
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+  server:
+    container_name: distributed_systems_example-server
+    build:
+      context: .
+      dockerfile: Dockerfile.server
 volumes:
   postgres_data:
