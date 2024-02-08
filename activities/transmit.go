@@ -24,7 +24,7 @@ func (cgf TransmitConfig) TransmitOrderActivity(ctx context.Context, i schemas.W
 		return err
 	}
 
-	url := "http://localhost:3001"
+	url := "http://transmission-endpoint:3000"
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		activity.GetLogger(ctx).Error("Error creating request", "Error", err)
