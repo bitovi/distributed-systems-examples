@@ -13,10 +13,7 @@ const snsClient = new SNSClient({
 })
 
 exports.handler = async function(event, context) {
-  console.log('timeout poller running', {
-    user: process.env.POSTGRES_USER,
-    pass: process.env.POSTGRES_PASS
-  })
+  console.log('timeout poller running')
   const client = await pool.connect()
   try {
     const res = await client.query(`

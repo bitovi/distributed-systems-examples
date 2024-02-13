@@ -1,7 +1,7 @@
 const { SQSClient, ChangeMessageVisibilityCommand } = require("@aws-sdk/client-sqs")
 const TRANSMISSION_ENDPOINT = 'http://transmission-endpoint:3000'
 const API_ENDPOINT = `${process.env.API_URL}/order`
-const MAX_RETRIES = 3
+const MAX_RETRIES = 5
 
 const client = new SQSClient({ endpoint: "http://localstack:4566", tls: false })
 
