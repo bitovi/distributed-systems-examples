@@ -18,7 +18,7 @@ exports.handler = async function(event, context) {
   try {
     const res = await client.query(`
       SELECT * from orders
-      WHERE created_at < NOW() - INTERVAL '5 minutes'
+      WHERE created_at < NOW() - INTERVAL '1 minute'
       AND status = 'PENDING';
     `)
     await Promise.all(res.rows.map(order => {

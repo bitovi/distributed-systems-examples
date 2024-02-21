@@ -40,12 +40,12 @@ exports.handler = async function(event, context) {
         })
         break
       case 'ERROR':
-        await reQueueMessageWithDelay(sqsMessage.receiptHandle, 60)
+        await reQueueMessageWithDelay(sqsMessage.receiptHandle, 30)
         break
     }
   } catch (err) {
     if (!(err instanceof DelayError)) {
-      await reQueueMessageWithDelay(sqsMessage.receiptHandle, 60)
+      await reQueueMessageWithDelay(sqsMessage.receiptHandle, 30)
     }
     throw err
   }
