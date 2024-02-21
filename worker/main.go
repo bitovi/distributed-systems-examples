@@ -41,7 +41,7 @@ func main() {
 	w := worker.New(temporalClient, "demo", worker.Options{})
 
 	wf := app.NewWorkflow()
-	w.RegisterWorkflow(wf.Workflow)
+	w.RegisterWorkflow(wf.OrderWorkflow)
 	w.RegisterActivity(activities.NewSaveOrder(db).SaveOrderActivity)
 	w.RegisterActivity(activities.NewUpdateOrder(db).UpdateOrderActivity)
 	w.RegisterActivity(activities.NewTransmitOrder().TransmitOrderActivity)

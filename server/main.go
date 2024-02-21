@@ -55,7 +55,7 @@ func createHandler(w http.ResponseWriter, r *http.Request) {
 	wf := app.NewWorkflow()
 
 	// Assuming you have a workflow function defined as YourWorkflow
-	we, err := workflowClient.ExecuteWorkflow(context.Background(), workflowOptions, wf.Workflow, data)
+	we, err := workflowClient.ExecuteWorkflow(context.Background(), workflowOptions, wf.OrderWorkflow, data)
 	if err != nil {
 		log.Fatalln("Error starting workflow", err)
 	}

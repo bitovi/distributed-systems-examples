@@ -2,6 +2,7 @@ package app
 
 import (
 	"bitovi/distributed-systems-examples/schemas"
+	"errors"
 	"time"
 
 	"go.temporal.io/sdk/temporal"
@@ -17,22 +18,39 @@ func NewWorkflow() *WorkflowConfig {
 	return &WorkflowConfig{}
 }
 
-func (cfg WorkflowConfig) Workflow(ctx workflow.Context, input schemas.WorkflowInput) (string, error) {
+func (cfg WorkflowConfig) OrderWorkflow(ctx workflow.Context, input schemas.WorkflowInput) (string, error) {
 	logger := workflow.GetLogger(ctx)
 
 	// Save Order
-	orderId, err := cfg.SaveOrder(ctx, input)
-	if err != nil {
-		logger.Info("Failed to save", "error", err.Error())
+	ao := workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
+		StartToCloseTimeout: 30 * time.Second,
+		RetryPolicy: &temporal.RetryPolicy{
+			MaximumAttempts: 3,
+		},
+	})
 
+	var orderId string
+	if err := workflow.ExecuteActivity(ao, "SaveOrderActivity", input).
+		Get(ctx, &orderId); err != nil {
+		logger.Info("Failed to save", "error", err.Error())
 		return "", err
 	}
+
 	logger.Info("Saved Order", "orderId", orderId)
 
 	// Create a timer
-	timerFuture := workflow.NewTimer(ctx, 5*time.Minute)
+	timerFuture := workflow.NewTimer(ctx, 1*time.Minute)
 	// Start Transmission
-	transmissionFuture := cfg.TransmitOrderFuture(ctx, input)
+	c := workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
+		StartToCloseTimeout: 30 * time.Second,
+		RetryPolicy: &temporal.RetryPolicy{
+			InitialInterval:    30 * time.Second,
+			BackoffCoefficient: 2.0,
+			MaximumInterval:    5 * time.Minute,
+			MaximumAttempts:    3,
+		},
+	})
+	transmissionFuture := workflow.ExecuteActivity(c, "TransmitOrderActivity", input)
 
 	selector := workflow.NewSelector(ctx)
 	var outcome string
@@ -55,60 +73,32 @@ func (cfg WorkflowConfig) Workflow(ctx workflow.Context, input schemas.WorkflowI
 	switch outcome {
 	case "completed":
 		// Call UpdateOrder with "CONFIRMED" status
-		if err := cfg.UpdateOrder(ctx, "CONFIRMED", *orderId); err != nil {
-			return *orderId, err
+		c := workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
+			StartToCloseTimeout: 30 * time.Second,
+			RetryPolicy: &temporal.RetryPolicy{
+				MaximumAttempts: 3,
+			},
+		})
+
+		if err := workflow.ExecuteActivity(c, "UpdateOrderActivity", "CONFIRMED", orderId).
+			Get(ctx, nil); err != nil {
+			return orderId, err
 		}
 	case "failed":
 		// Call UpdateOrder with "FAILED" status
-		if err := cfg.UpdateOrder(ctx, "FAILED", *orderId); err != nil {
-			return *orderId, err
+		c := workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
+			StartToCloseTimeout: 30 * time.Second,
+			RetryPolicy: &temporal.RetryPolicy{
+				MaximumAttempts: 3,
+			},
+		})
+
+		if err := workflow.ExecuteActivity(c, "UpdateOrderActivity", "FAILED", orderId).
+			Get(ctx, nil); err != nil {
+			return orderId, err
 		}
+		return orderId, errors.New("order was failed")
 	}
 
-	return *orderId, nil
-}
-
-func (cfg WorkflowConfig) SaveOrder(ctx workflow.Context, input schemas.WorkflowInput) (*string, error) {
-	c := workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
-		StartToCloseTimeout: 30 * time.Second,
-		RetryPolicy: &temporal.RetryPolicy{
-			MaximumAttempts: 3,
-		},
-	})
-
-	var orderId string
-	if err := workflow.ExecuteActivity(c, "SaveOrderActivity", input).
-		Get(ctx, &orderId); err != nil {
-		return nil, err
-	}
-	return &orderId, nil
-}
-
-func (cfg WorkflowConfig) UpdateOrder(ctx workflow.Context, status, orderId string) error {
-	c := workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
-		StartToCloseTimeout: 30 * time.Second,
-		RetryPolicy: &temporal.RetryPolicy{
-			MaximumAttempts: 3,
-		},
-	})
-
-	if err := workflow.ExecuteActivity(c, "UpdateOrderActivity", status, orderId).
-		Get(ctx, nil); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (cfg WorkflowConfig) TransmitOrderFuture(ctx workflow.Context, input schemas.WorkflowInput) workflow.Future {
-	c := workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
-		StartToCloseTimeout: 30 * time.Second,
-		RetryPolicy: &temporal.RetryPolicy{
-			InitialInterval:    2 * time.Second,
-			BackoffCoefficient: 2.0,
-			MaximumInterval:    5 * time.Minute,
-			MaximumAttempts:    3,
-		},
-	})
-
-	return workflow.ExecuteActivity(c, "TransmitOrderActivity", input)
+	return orderId, nil
 }

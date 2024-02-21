@@ -7,9 +7,9 @@ type WorkflowInput struct {
 }
 
 type Product struct {
-	ProductCode string `json:"productCode"`
-	Quantity    int    `json:"quantity"`
-	Price       int    `json:"price"`
+	ProductCode int `json:"productCode"`
+	Quantity    int `json:"quantity"`
+	Price       int `json:"price"`
 }
 
 type Customer struct {
