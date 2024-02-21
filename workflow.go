@@ -44,10 +44,10 @@ func (cfg WorkflowConfig) OrderWorkflow(ctx workflow.Context, input schemas.Work
 	c := workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
 		StartToCloseTimeout: 30 * time.Second,
 		RetryPolicy: &temporal.RetryPolicy{
-			InitialInterval:    30 * time.Second,
-			BackoffCoefficient: 2.0,
-			MaximumInterval:    5 * time.Minute,
-			MaximumAttempts:    3,
+			InitialInterval: 30 * time.Second,
+			// BackoffCoefficient: 2.0,
+			MaximumInterval: 5 * time.Minute,
+			MaximumAttempts: 3,
 		},
 	})
 	transmissionFuture := workflow.ExecuteActivity(c, "TransmitOrderActivity", input)
