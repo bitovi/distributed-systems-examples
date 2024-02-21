@@ -6,6 +6,8 @@ const fastify = Fastify({
   logger: true
 })
 
+fastify.register(require('fastify-graceful-shutdown'))
+
 const transmissions = []
 
 fastify.post('/', function (request, reply) {
@@ -16,6 +18,13 @@ fastify.post('/', function (request, reply) {
 
 fastify.get('/', function (request, reply) {
   reply.send({ transmissions })
+})
+
+fastify.after(() => {
+  fastify.gracefulShutdown((signal, next) => {
+    console.log('Upps!')
+    next()
+  })
 })
 
 fastify.listen({ host: '0.0.0.0', port: PORT }, function (err, address) {
