@@ -53,6 +53,8 @@ services:
       POSTGRES_PASS: postgres
       POSTGRES_PORT: 5432
       ORDER_TIMEOUT_TOPIC: arn:aws:sns:us-east-1:000000000000:orderTimeout
+      TRANSMISSION_ENDPOINT: http://transmission-endpoint:3000
+      TRANSMISSION_QUEUE_URL: http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/orderTransmission
       # DEBUG: 1
 #      DATA_DIR: /tmp/localstack/data
     volumes:

@@ -70,7 +70,7 @@ aws \
   --handler transmission.handler \
   --runtime nodejs20.x \
   --description "Order Transmission Lambda Function" \
-  --environment Variables="{API_URL=$API_URL}" \
+  --environment Variables="{API_URL=$API_URL,AWS_URL=$AWS_URL,TRANSMISSION_ENDPOINT=$TRANSMISSION_ENDPOINT,TRANSMISSION_QUEUE_URL=$TRANSMISSION_QUEUE_URL}" \
   --timeout 60 \
   --memory-size 128
 

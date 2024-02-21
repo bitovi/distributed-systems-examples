@@ -1,9 +1,11 @@
 const { SQSClient, ChangeMessageVisibilityCommand } = require("@aws-sdk/client-sqs")
-const TRANSMISSION_ENDPOINT = 'http://transmission-endpoint:3000'
+const AWS_URL = process.env.AWS_URL
+const TRANSMISSION_ENDPOINT = process.env.TRANSMISSION_ENDPOINT
+const TRANSMISSION_QUEUE_URL = process.env.TRANSMISSION_QUEUE_URL
 const API_ENDPOINT = `${process.env.API_URL}/order`
 const MAX_RETRIES = 5
 
-const client = new SQSClient({ endpoint: "http://localstack:4566", tls: false })
+const client = new SQSClient({ endpoint: AWS_URL, tls: false })
 
 exports.handler = async function(event, context) {
   console.log('received order tranmission')
@@ -86,7 +88,7 @@ class DelayError extends Error {}
 async function reQueueMessageWithDelay(handle, delaySeconds) {
   console.log('reQueueMessageWithDelay', { handle })
   const params = {
-      QueueUrl: 'http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/orderTransmission',
+      QueueUrl: TRANSMISSION_QUEUE_URL,
       ReceiptHandle: handle,
       VisibilityTimeout: delaySeconds,
   }
